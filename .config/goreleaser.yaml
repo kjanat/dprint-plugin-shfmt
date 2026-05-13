@@ -4,12 +4,22 @@ version: 2
 
 project_name: dprint-plugin-shfmt
 
+env:
+  - LOCKED_DESCRIPTION="Whether the configuration is not allowed to be overridden or extended."
+
 builds:
   - id: skip-go-build
     skip: true
 
 before:
   hooks:
+    - >-
+      go run ./dprint/cmd/gen-json-schema
+        -type configuration
+        -out schema.json
+        -schema-id https://plugins.dprint.dev/kjanat/shfmt/{{ .Version }}/schema.json
+        -include-locked
+        -locked-description {{ .Env.LOCKED_DESCRIPTION }}
     - tinygo build -o plugin.wasm -target=wasm-unknown -gc=conservative -scheduler=none -panic=trap -no-debug -ldflags="-extldflags '-z stack-size=1048576' -X main.Version={{ .Version }} -X main.ReleaseTag={{ .Version }} -X main.RepoSlug={{ .Env.REPO_SLUG }} -X main.GitHubRepo={{ .Env.GITHUB_REPO }}" .
 
 release:

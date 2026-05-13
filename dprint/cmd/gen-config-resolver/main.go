@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"go/ast"
 	"go/format"
-	"go/parser"
 	"go/token"
-	"io/fs"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"golang.org/x/tools/go/packages"
 )
 
 type configField struct {
@@ -77,21 +77,19 @@ func main() {
 }
 
 func parseStructFields(dir string, typeName string, dprintTagKey string) (string, []configField, error) {
-	fset := token.NewFileSet()
-	//nolint:staticcheck // ParseDir is enough for this local source generator.
-	pkgs, err := parser.ParseDir(fset, dir, includeSourceFile, parser.ParseComments)
+	pkgs, err := loadPackages(dir)
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to parse directory %q: %w", dir, err)
+		return "", nil, err
 	}
 
-	for pkgName, pkg := range pkgs {
-		for _, file := range pkg.Files {
+	for _, pkg := range pkgs {
+		for _, file := range pkg.Syntax {
 			fields, ok, err := parseStructTypeFromFile(file, typeName, dprintTagKey)
 			if err != nil {
 				return "", nil, err
 			}
 			if ok {
-				return pkgName, fields, nil
+				return pkg.Name, fields, nil
 			}
 		}
 	}
@@ -99,9 +97,26 @@ func parseStructFields(dir string, typeName string, dprintTagKey string) (string
 	return "", nil, fmt.Errorf("type %q not found", typeName)
 }
 
-func includeSourceFile(info fs.FileInfo) bool {
-	name := info.Name()
-	return strings.HasSuffix(name, ".go") && !strings.HasSuffix(name, "_test.go")
+func loadPackages(dir string) ([]*packages.Package, error) {
+	pkgs, err := packages.Load(&packages.Config{
+		Mode:  packages.NeedName | packages.NeedCompiledGoFiles | packages.NeedSyntax,
+		Dir:   dir,
+		Tests: false,
+	}, ".")
+	if err != nil {
+		return nil, fmt.Errorf("failed to load package in %q: %w", dir, err)
+	}
+	if len(pkgs) == 0 {
+		return nil, fmt.Errorf("no package found in %q", dir)
+	}
+
+	for _, pkg := range pkgs {
+		if len(pkg.Errors) > 0 {
+			return nil, fmt.Errorf("failed to load package in %q: %v", dir, pkg.Errors[0])
+		}
+	}
+
+	return pkgs, nil
 }
 
 func parseStructTypeFromFile(file *ast.File, typeName string, dprintTagKey string) ([]configField, bool, error) {
