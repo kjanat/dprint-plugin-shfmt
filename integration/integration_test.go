@@ -90,7 +90,7 @@ func TestDprintPluginLicenseCommandIntegration(t *testing.T) {
 
 	for _, expected := range []string{
 		"==== DPRINT-PLUGIN-SHFMT LICENSE ====",
-		"## github.com/hrko/dprint-plugin-shfmt",
+		"## github.com/kjanat/dprint-plugin-shfmt",
 		"## mvdan.cc/sh/v3",
 		"BSD 3-Clause License",
 	} {

@@ -1,9 +1,9 @@
 package main
 
-import "github.com/hrko/dprint-plugin-shfmt/dprint"
+import "github.com/kjanat/dprint-plugin-shfmt/dprint"
 
-//go:generate go run github.com/hrko/dprint-plugin-shfmt/dprint/cmd/gen-config-resolver -type configuration -out handler_config_generated.go -extra-known-keys locked
-//go:generate go run github.com/hrko/dprint-plugin-shfmt/dprint/cmd/gen-json-schema -type configuration -out schema.json -schema-id https://raw.githubusercontent.com/hrko/dprint-plugin-shfmt/main/schema.json -include-locked -locked-description "Whether the configuration is not allowed to be overridden or extended."
+//go:generate go run github.com/kjanat/dprint-plugin-shfmt/dprint/cmd/gen-config-resolver -type configuration -out handler_config_generated.go -extra-known-keys locked
+//go:generate go run github.com/kjanat/dprint-plugin-shfmt/dprint/cmd/gen-json-schema -type configuration -out schema.json -schema-id https://raw.githubusercontent.com/kjanat/dprint-plugin-shfmt/main/schema.json -include-locked -locked-description "Whether the configuration is not allowed to be overridden or extended."
 
 type configuration struct {
 	IndentWidth      uint32 `description:"Number of spaces per indentation level when not using tabs."                                        dprint:"default=2,global"     json:"indentWidth"`

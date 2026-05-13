@@ -1,4 +1,4 @@
-module github.com/hrko/dprint-plugin-shfmt
+module github.com/kjanat/dprint-plugin-shfmt
 
 go 1.26.2
 

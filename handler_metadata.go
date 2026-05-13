@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 
-	"github.com/hrko/dprint-plugin-shfmt/dprint"
+	"github.com/kjanat/dprint-plugin-shfmt/dprint"
 )
 
 // TinyGo's `-X` ldflag injection only takes effect on package-level
@@ -15,9 +15,9 @@ const (
 	pluginConfigKey = "shfmt"
 
 	defaultVersion    = "0.0.0-dev"
-	defaultReleaseTag = "v0.0.0-dev"
-	defaultRepoSlug   = "hrko/shfmt"
-	defaultGitHubRepo = "hrko/dprint-plugin-shfmt"
+	defaultReleaseTag = "0.0.0-dev"
+	defaultRepoSlug   = "kjanat/shfmt"
+	defaultGitHubRepo = "kjanat/dprint-plugin-shfmt"
 )
 
 //go:generate sh -c "go-licenses report . --template licenses.tpl > licenses.generated.txt"

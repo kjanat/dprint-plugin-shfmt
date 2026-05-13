@@ -1,14 +1,15 @@
 
-## github.com/hrko/dprint-plugin-shfmt
+## github.com/kjanat/dprint-plugin-shfmt
 
-* Name: github.com/hrko/dprint-plugin-shfmt
+* Name: github.com/kjanat/dprint-plugin-shfmt
 * Version: Unknown
-* License: [BSD-3-Clause](https://github.com/hrko/dprint-plugin-shfmt/blob/HEAD/LICENSE)
+* License: [BSD-3-Clause](https://github.com/kjanat/dprint-plugin-shfmt/blob/HEAD/LICENSE)
 
 ```
 BSD 3-Clause License
 
 Copyright (c) 2026, hrko
+Copyright (c) 2026, Kaj Kowalski
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

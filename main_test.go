@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hrko/dprint-plugin-shfmt/dprint"
+	"github.com/kjanat/dprint-plugin-shfmt/dprint"
 )
 
 func TestResolveConfigDefaults(t *testing.T) {
@@ -231,7 +231,7 @@ func TestLicenseTextEmbedsFullLicenseReport(t *testing.T) {
 	if strings.TrimSpace(licenseText) == "" {
 		t.Fatal("expected non-empty license text")
 	}
-	if !strings.Contains(licenseText, "## github.com/hrko/dprint-plugin-shfmt") {
+	if !strings.Contains(licenseText, "## github.com/kjanat/dprint-plugin-shfmt") {
 		t.Fatal("expected first-party module section in embedded license text")
 	}
 	if !strings.Contains(licenseText, "BSD 3-Clause License") {

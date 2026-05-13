@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 
-	"github.com/hrko/dprint-plugin-shfmt/dprint"
+	"github.com/kjanat/dprint-plugin-shfmt/dprint"
 	"mvdan.cc/sh/v3/syntax"
 )
 
