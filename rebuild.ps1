@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
 	Build dprint-plugin-shfmt.wasm with fork-identity ldflag injection.
