@@ -6,8 +6,8 @@ For my personal machine only... for now I guess...
 param(
 	[string]$TinyGoPath = "$env:LOCALAPPDATA\Microsoft\WinGet\Packages\tinygo-org.tinygo_Microsoft.Winget.Source_8wekyb3d8bbwe\tinygo\bin\tinygo.exe",
 	[string]$WasmOptPath = "$env:USERPROFILE\scoop\shims\wasm-opt.exe",
-	[string]$Version = "0.0.5",
-	[string]$ReleaseTag = "0.0.5",
+	[string]$Version = "0.0.7",
+	[string]$ReleaseTag = "0.0.7",
 	[string]$RepoSlug = "kjanat/shfmt",
 	[string]$GitHubRepo = "kjanat/dprint-plugin-shfmt",
 	[string]$OutputPath = "plugin.wasm",
