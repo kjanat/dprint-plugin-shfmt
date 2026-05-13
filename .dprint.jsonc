@@ -1,21 +1,21 @@
 {
+  "newLineKind": "lf",
+  "toml": { "comment.forceLeadingSpace": false },
   "exec": {
     "cwd": "${configDir}",
     "commands": [{
-      // example: "command": "prettier --stdin-filepath {{file_path}} --tab-width {{indent_width}} --print-width {{line_width}}",
       "command": "golangci-lint fmt --stdin",
       "exts": ["go"],
-      // If we ever create a config file for golangci-lint, we can add it here so that dprint will re-run when the config file changes. For now, we don't have a config file, so this is commented out.
-      // "cacheKeyFiles": [".golangci.toml"],
+      "cacheKeyFiles": [".golangci.yaml"],
     }],
   },
   "excludes": ["**/integration/testdata/**"],
   "plugins": [
+    "https://plugins.dprint.dev/exec-0.6.2.json@df98f54ffd3092b8a841aedd6d098a2651f16d0a796a40535774f1a8b4b9d463",
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm",
     "https://plugins.dprint.dev/json-0.21.3.wasm",
+    "https://plugins.dprint.dev/kjanat/shfmt-0.0.7.wasm",
     "https://plugins.dprint.dev/markdown-0.21.1.wasm",
     "https://plugins.dprint.dev/toml-0.7.0.wasm",
-    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm",
-    "https://plugins.dprint.dev/kjanat/shfmt-0.0.7.wasm",
-    "https://plugins.dprint.dev/exec-0.6.2.json@df98f54ffd3092b8a841aedd6d098a2651f16d0a796a40535774f1a8b4b9d463",
   ],
 }
