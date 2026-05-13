@@ -4,9 +4,11 @@
 	Build dprint-plugin-shfmt.wasm with fork-identity ldflag injection.
 
 .DESCRIPTION
-	Local Windows rebuild for the fork's wasm artifact. Pinned to my
-	personal toolchain layout (winget tinygo, scoop wasm-opt), but every
-	path is overridable via parameter.
+	Local rebuild for the fork's wasm artifact. Resolves `tinygo` and
+	`wasm-opt` from `PATH` by default; pass `-TinyGoPath`/`-WasmOptPath`
+	to point at off-PATH installs (winget package dir, scoop shim, etc.).
+	`TINYGOROOT` is read from `tinygo env TINYGOROOT` so shim-based
+	installs work the same as direct ones.
 
 	Version, ReleaseTag, RepoSlug, GitHubRepo are validated against the
 	fork convention: bare semver (no v-prefix), `owner/name` slug shape.
@@ -42,10 +44,10 @@
 [OutputType([System.IO.FileInfo])]
 param(
 	[ValidateNotNullOrEmpty()]
-	[string]$TinyGoPath = (Join-Path $env:LOCALAPPDATA "Microsoft\WinGet\Packages\tinygo-org.tinygo_Microsoft.Winget.Source_8wekyb3d8bbwe\tinygo\bin\tinygo.exe"),
+	[string]$TinyGoPath = 'tinygo',
 
 	[ValidateNotNullOrEmpty()]
-	[string]$WasmOptPath = (Join-Path $env:USERPROFILE "scoop\shims\wasm-opt.exe"),
+	[string]$WasmOptPath = 'wasm-opt',
 
 	[ValidatePattern('^\d+\.\d+\.\d+(-[\w.]+)?$')]
 	[string]$Version = $(
@@ -104,22 +106,18 @@ function Resolve-ToolPath {
 		[string]$ToolName
 	)
 
-	if (Test-Path $ToolPath) {
-		return (Resolve-Path $ToolPath).Path
-	}
-
-	$command = Get-Command $ToolPath -ErrorAction SilentlyContinue
+	$command = Get-Command $ToolPath -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
 	if ($null -ne $command) {
 		return $command.Source
 	}
 
-	throw "$ToolName not found: $ToolPath"
+	throw "$ToolName not found on PATH or at: $ToolPath"
 }
 
 $tinyGoExe = Resolve-ToolPath -ToolPath $TinyGoPath -ToolName "TinyGo"
 $wasmOptExe = Resolve-ToolPath -ToolPath $WasmOptPath -ToolName "wasm-opt"
 
-$env:TINYGOROOT = Split-Path (Split-Path $tinyGoExe)
+$env:TINYGOROOT = (& $tinyGoExe env TINYGOROOT).Trim()
 $env:WASMOPT = $wasmOptExe
 
 Write-Verbose "TinyGo:     $tinyGoExe"
