@@ -7,9 +7,17 @@ import (
 	"github.com/hrko/dprint-plugin-shfmt/dprint"
 )
 
+// TinyGo's `-X` ldflag injection only takes effect on package-level
+// string vars without a constant initializer. Keep `Version` etc.
+// zero-valued in `main.go` and apply defaults here.
 const (
 	pluginName      = "dprint-plugin-shfmt"
 	pluginConfigKey = "shfmt"
+
+	defaultVersion    = "0.0.0-dev"
+	defaultReleaseTag = "v0.0.0-dev"
+	defaultRepoSlug   = "hrko/shfmt"
+	defaultGitHubRepo = "hrko/dprint-plugin-shfmt"
 )
 
 //go:generate sh -c "go-licenses report . --template licenses.tpl > licenses.generated.txt"
@@ -17,16 +25,24 @@ const (
 var embeddedLicenseText string
 
 func (h *handler) PluginInfo() dprint.PluginInfo {
-	updateURL := fmt.Sprintf("https://plugins.dprint.dev/%s/latest.json", RepoSlug)
+	slug := orDefault(RepoSlug, defaultRepoSlug)
+	updateURL := fmt.Sprintf("https://plugins.dprint.dev/%s/latest.json", slug)
 
 	return dprint.PluginInfo{
 		Name:            pluginName,
-		Version:         Version,
+		Version:         orDefault(Version, defaultVersion),
 		ConfigKey:       pluginConfigKey,
-		HelpURL:         fmt.Sprintf("https://github.com/%s", GitHubRepo),
-		ConfigSchemaURL: fmt.Sprintf("https://plugins.dprint.dev/%s/%s/schema.json", RepoSlug, ReleaseTag),
+		HelpURL:         fmt.Sprintf("https://github.com/%s", orDefault(GitHubRepo, defaultGitHubRepo)),
+		ConfigSchemaURL: fmt.Sprintf("https://plugins.dprint.dev/%s/%s/schema.json", slug, orDefault(ReleaseTag, defaultReleaseTag)),
 		UpdateURL:       &updateURL,
 	}
+}
+
+func orDefault(value, fallback string) string {
+	if value == "" {
+		return fallback
+	}
+	return value
 }
 
 func (h *handler) LicenseText() string {
