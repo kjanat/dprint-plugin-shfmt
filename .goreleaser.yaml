@@ -8,7 +8,7 @@ builds:
 
 before:
   hooks:
-    - tinygo build -o plugin.wasm -target=wasm-unknown -gc=conservative -scheduler=none -panic=trap -no-debug -ldflags="-extldflags '-z stack-size=1048576' -X main.Version={{ .Version }} -X main.ReleaseTag=v{{ .Version }}" .
+    - tinygo build -o plugin.wasm -target=wasm-unknown -gc=conservative -scheduler=none -panic=trap -no-debug -ldflags="-extldflags '-z stack-size=1048576' -X main.Version={{ .Version }} -X main.ReleaseTag={{ .Version }} -X main.RepoSlug={{ .Env.REPO_SLUG }} -X main.GitHubRepo={{ .Env.GITHUB_REPO }}" .
 
 release:
   extra_files:

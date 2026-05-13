@@ -239,18 +239,19 @@ func TestLicenseTextEmbedsFullLicenseReport(t *testing.T) {
 	}
 }
 
-func TestPluginInfoUsesPluginsDprintDevURLs(t *testing.T) {
-	oldVersion := Version
-	oldReleaseTag := ReleaseTag
-	Version = "1.2.3"
-	ReleaseTag = "v1.2.3"
+func withInjectedMetadata(t *testing.T, version, tag, slug, ghRepo string) {
+	t.Helper()
+	oldV, oldT, oldS, oldG := Version, ReleaseTag, RepoSlug, GitHubRepo
+	Version, ReleaseTag, RepoSlug, GitHubRepo = version, tag, slug, ghRepo
 	t.Cleanup(func() {
-		Version = oldVersion
-		ReleaseTag = oldReleaseTag
+		Version, ReleaseTag, RepoSlug, GitHubRepo = oldV, oldT, oldS, oldG
 	})
+}
 
-	h := &handler{}
-	info := h.PluginInfo()
+func TestPluginInfoUsesUpstreamDefaults(t *testing.T) {
+	withInjectedMetadata(t, "1.2.3", "1.2.3", "hrko/shfmt", "hrko/dprint-plugin-shfmt")
+
+	info := (&handler{}).PluginInfo()
 
 	if info.UpdateURL == nil {
 		t.Fatal("expected update URL to be set")
@@ -258,7 +259,29 @@ func TestPluginInfoUsesPluginsDprintDevURLs(t *testing.T) {
 	if *info.UpdateURL != "https://plugins.dprint.dev/hrko/shfmt/latest.json" {
 		t.Fatalf("unexpected update URL: %q", *info.UpdateURL)
 	}
-	if info.ConfigSchemaURL != "https://plugins.dprint.dev/hrko/shfmt/v1.2.3/schema.json" {
+	if info.ConfigSchemaURL != "https://plugins.dprint.dev/hrko/shfmt/1.2.3/schema.json" {
 		t.Fatalf("unexpected config schema URL: %q", info.ConfigSchemaURL)
+	}
+	if info.HelpURL != "https://github.com/hrko/dprint-plugin-shfmt" {
+		t.Fatalf("unexpected help URL: %q", info.HelpURL)
+	}
+}
+
+func TestPluginInfoUsesInjectedForkMetadata(t *testing.T) {
+	withInjectedMetadata(t, "0.0.5", "0.0.5", "kjanat/shfmt", "kjanat/dprint-plugin-shfmt")
+
+	info := (&handler{}).PluginInfo()
+
+	if info.UpdateURL == nil {
+		t.Fatal("expected update URL to be set")
+	}
+	if *info.UpdateURL != "https://plugins.dprint.dev/kjanat/shfmt/latest.json" {
+		t.Fatalf("unexpected update URL: %q", *info.UpdateURL)
+	}
+	if info.ConfigSchemaURL != "https://plugins.dprint.dev/kjanat/shfmt/0.0.5/schema.json" {
+		t.Fatalf("unexpected config schema URL: %q", info.ConfigSchemaURL)
+	}
+	if info.HelpURL != "https://github.com/kjanat/dprint-plugin-shfmt" {
+		t.Fatalf("unexpected help URL: %q", info.HelpURL)
 	}
 }
