@@ -50,8 +50,8 @@ func TestDprintPluginIntegration(t *testing.T) {
 	cases := []integrationCase{
 		{name: "format-success"},
 		{name: "no-change"},
-		{name: "parse-error", exitCode: 1, stderrContains: []string{"must end with \"fi\""}},
-		{name: "variant-sh-fails-for-bash-array", virtualPath: "sample.sh", exitCode: 1, stderrContains: []string{"arrays are a bash/mksh feature"}},
+		{name: "parse-error", exitCode: 1, stderrContains: []string{"`then` must be followed by a statement list"}},
+		{name: "variant-sh-fails-for-bash-array", virtualPath: "sample.sh", exitCode: 1, stderrContains: []string{"arrays are a bash/mksh/zsh feature"}},
 		{name: "variant-bash-succeeds-for-bash-array", virtualPath: "sample.bash"},
 		{name: "shebang-precedence"},
 		{name: "plugin-overrides-global"},

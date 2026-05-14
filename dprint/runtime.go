@@ -8,6 +8,8 @@ import (
 	"unicode/utf8"
 )
 
+const diagKindErr = "err"
+
 type jsonResponse struct {
 	Kind string `json:"kind"`
 	Data any    `json:"data"`
@@ -182,14 +184,14 @@ func (r *Runtime[T]) CheckConfigUpdates() uint32 {
 	var message CheckConfigUpdatesMessage
 	if err := json.Unmarshal(r.takeSharedBytes(), &message); err != nil {
 		response = jsonResponse{
-			Kind: "err",
+			Kind: diagKindErr,
 			Data: err.Error(),
 		}
 	} else {
 		changes, err := r.handler.CheckConfigUpdates(message)
 		if err != nil {
 			response = jsonResponse{
-				Kind: "err",
+				Kind: diagKindErr,
 				Data: err.Error(),
 			}
 		} else {

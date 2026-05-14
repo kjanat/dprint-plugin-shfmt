@@ -15,7 +15,6 @@ const (
 	pluginConfigKey = "shfmt"
 
 	defaultVersion    = "0.0.0-dev"
-	defaultReleaseTag = "0.0.0-dev"
 	defaultRepoSlug   = "kjanat/shfmt"
 	defaultGitHubRepo = "kjanat/dprint-plugin-shfmt"
 )
@@ -33,7 +32,7 @@ func (h *handler) PluginInfo() dprint.PluginInfo {
 		Version:         orDefault(Version, defaultVersion),
 		ConfigKey:       pluginConfigKey,
 		HelpURL:         fmt.Sprintf("https://github.com/%s", orDefault(GitHubRepo, defaultGitHubRepo)),
-		ConfigSchemaURL: fmt.Sprintf("https://plugins.dprint.dev/%s/%s/schema.json", slug, orDefault(ReleaseTag, defaultReleaseTag)),
+		ConfigSchemaURL: fmt.Sprintf("https://plugins.dprint.dev/%s/%s/schema.json", slug, orDefault(ReleaseTag, defaultVersion)),
 		UpdateURL:       &updateURL,
 	}
 }

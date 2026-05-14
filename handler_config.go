@@ -16,7 +16,7 @@ type configuration struct {
 	ExperimentalZsh  bool   `description:"Whether to format .zsh files. Zsh support in the underlying library is experimental."               dprint:"default=false"        json:"experimentalZsh"`
 }
 
-var fileExtensions = []string{"sh", "bash", "mksh", "bats"}
+var fileExtensions = []string{extSh, extBash, extMksh, extBats}
 
 func (h *handler) ResolveConfig(
 	config dprint.ConfigKeyMap,
