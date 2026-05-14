@@ -1,6 +1,6 @@
 module github.com/kjanat/dprint-plugin-shfmt
 
-go 1.26.2
+go 1.26.3
 
 require mvdan.cc/sh/v3 v3.13.1
 
