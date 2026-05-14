@@ -58,9 +58,12 @@ func main() {
 	schemaVersion := schemaVersionLatest
 	binaryVersion := m.BinaryVersion
 	if *release {
+		rv, err := deriveReleaseVersion(root)
+		must(err)
+		m.ReleaseVersion = rv
 		schemaOut = releaseSchemaPath
-		schemaVersion = m.ReleaseVersion
-		binaryVersion = m.ReleaseVersion
+		schemaVersion = rv
+		binaryVersion = rv
 	}
 
 	fmt.Fprintf(os.Stderr,
@@ -125,21 +128,24 @@ func deriveMeta(root string) (meta, error) {
 	if err != nil {
 		return meta{}, fmt.Errorf("git describe --dirty: %w", err)
 	}
-	releaseTag, err := gitOutput(root, "describe", "--tags", "--abbrev=0")
-	if err != nil {
-		return meta{}, fmt.Errorf("git describe --abbrev=0: %w", err)
-	}
 
 	return meta{
-		ModulePath:     mp,
-		Host:           host,
-		Owner:          owner,
-		Name:           name,
-		Slug:           owner + "/" + name,
-		ShortSlug:      owner + "/" + short,
-		BinaryVersion:  binaryVersion,
-		ReleaseVersion: strings.TrimPrefix(releaseTag, "v"),
+		ModulePath:    mp,
+		Host:          host,
+		Owner:         owner,
+		Name:          name,
+		Slug:          owner + "/" + name,
+		ShortSlug:     owner + "/" + short,
+		BinaryVersion: binaryVersion,
 	}, nil
+}
+
+func deriveReleaseVersion(root string) (string, error) {
+	tag, err := gitOutput(root, "describe", "--tags", "--abbrev=0")
+	if err != nil {
+		return "", fmt.Errorf("git describe --abbrev=0: %w", err)
+	}
+	return strings.TrimPrefix(tag, "v"), nil
 }
 
 func gitOutput(root string, args ...string) (string, error) {
