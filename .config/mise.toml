@@ -33,8 +33,8 @@ description = "Run golangci-lint"
 run = "golangci-lint run ./..."
 
 [tasks.build-wasm]
-description = "Build wasm plugin"
-run = "tinygo build -o plugin.wasm -target=wasm-unknown -gc=conservative -scheduler=none -panic=trap -no-debug -ldflags=\"-extldflags '-z stack-size=1048576' -X main.Version=${DPRINT_PLUGIN_SHFMT_VERSION:-0.0.0-dev} -X main.ReleaseTag=${DPRINT_PLUGIN_SHFMT_RELEASE_TAG:-0.0.0-dev}\" ."
+description = "Build wasm plugin and schema"
+run = "go run ./dprint/cmd/build"
 
 [tasks.release-check]
 description = "Validate goreleaser configuration"
