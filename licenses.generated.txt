@@ -1,14 +1,15 @@
 
-## github.com/hrko/dprint-plugin-shfmt
+## github.com/kjanat/dprint-plugin-shfmt
 
-* Name: github.com/hrko/dprint-plugin-shfmt
+* Name: github.com/kjanat/dprint-plugin-shfmt
 * Version: Unknown
-* License: [BSD-3-Clause](https://github.com/hrko/dprint-plugin-shfmt/blob/HEAD/LICENSE)
+* License: [BSD-3-Clause](https://github.com/kjanat/dprint-plugin-shfmt/blob/HEAD/LICENSE)
 
 ```
 BSD 3-Clause License
 
 Copyright (c) 2026, hrko
+Copyright (c) 2026, Kaj Kowalski
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -40,8 +41,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ## mvdan.cc/sh/v3
 
 * Name: mvdan.cc/sh/v3
-* Version: v3.12.0
-* License: [BSD-3-Clause](https://github.com/mvdan/sh/blob/v3.12.0/LICENSE)
+* Version: v3.13.1
+* License: [BSD-3-Clause](https://github.com/mvdan/sh/blob/v3.13.1/LICENSE)
 
 ```
 Copyright (c) 2016, Daniel Martí. All rights reserved.

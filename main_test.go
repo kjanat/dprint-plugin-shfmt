@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"slices"
 	"strings"
 	"testing"
 
-	"github.com/hrko/dprint-plugin-shfmt/dprint"
+	"github.com/kjanat/dprint-plugin-shfmt/dprint"
 )
 
 func TestResolveConfigDefaults(t *testing.T) {
@@ -21,6 +22,28 @@ func TestResolveConfigDefaults(t *testing.T) {
 	}
 	if len(result.Diagnostics) != 0 {
 		t.Fatalf("expected no diagnostics, got %d", len(result.Diagnostics))
+	}
+	for _, fileExtension := range result.FileMatching.FileExtensions {
+		if fileExtension == extZsh {
+			t.Fatal("expected zsh not to be advertised by default")
+		}
+	}
+}
+
+func TestResolveConfigExperimentalZshAdvertisesExtension(t *testing.T) {
+	h := &handler{}
+
+	result := h.ResolveConfig(
+		dprint.ConfigKeyMap{cfgKeyExperimentalZsh: true},
+		dprint.GlobalConfiguration{},
+	)
+
+	if len(result.Diagnostics) != 0 {
+		t.Fatalf("expected no diagnostics, got %d", len(result.Diagnostics))
+	}
+	found := slices.Contains(result.FileMatching.FileExtensions, extZsh)
+	if !found {
+		t.Fatal("expected zsh to be advertised when experimentalZsh is true")
 	}
 }
 
@@ -44,14 +67,14 @@ func TestResolveConfigPluginConfigPrecedenceAndDiagnostics(t *testing.T) {
 
 	result := h.ResolveConfig(
 		dprint.ConfigKeyMap{
-			"indentWidth":  float64(4),
-			"useTabs":      false,
-			"funcNextLine": "invalid",
-			"unknownField": true,
+			cfgKeyIndentWidth:  float64(4),
+			cfgKeyUseTabs:      false,
+			cfgKeyFuncNextLine: "invalid",
+			"unknownField":     true,
 		},
 		dprint.GlobalConfiguration{
-			"indentWidth": float64(8),
-			"useTabs":     true,
+			cfgKeyIndentWidth: float64(8),
+			cfgKeyUseTabs:     true,
 		},
 	)
 
@@ -72,15 +95,15 @@ func TestResolveConfigCoercesFlexibleValueTypes(t *testing.T) {
 
 	result := h.ResolveConfig(
 		dprint.ConfigKeyMap{
-			"indentWidth":      []byte("4"),
-			"useTabs":          "false",
-			"binaryNextLine":   []byte("true"),
-			"switchCaseIndent": json.Number("1"),
-			"spaceRedirects":   float64(0),
+			cfgKeyIndentWidth:      []byte("4"),
+			cfgKeyUseTabs:          "false",
+			cfgKeyBinaryNextLine:   []byte("true"),
+			cfgKeySwitchCaseIndent: json.Number("1"),
+			cfgKeySpaceRedirects:   float64(0),
 		},
 		dprint.GlobalConfiguration{
-			"indentWidth": json.Number("8"),
-			"useTabs":     []byte("1"),
+			cfgKeyIndentWidth: json.Number("8"),
+			cfgKeyUseTabs:     []byte("1"),
 		},
 	)
 
@@ -109,12 +132,12 @@ func TestResolveConfigIgnoresNilValues(t *testing.T) {
 
 	result := h.ResolveConfig(
 		dprint.ConfigKeyMap{
-			"indentWidth": nil,
-			"useTabs":     nil,
+			cfgKeyIndentWidth: nil,
+			cfgKeyUseTabs:     nil,
 		},
 		dprint.GlobalConfiguration{
-			"indentWidth": nil,
-			"useTabs":     nil,
+			cfgKeyIndentWidth: nil,
+			cfgKeyUseTabs:     nil,
 		},
 	)
 
@@ -161,7 +184,7 @@ func TestFormatDetectsBashShebang(t *testing.T) {
 
 	result := h.Format(
 		dprint.SyncFormatRequest[configuration]{
-			FilePath: "script.sh",
+			FilePath: testFileScriptSh,
 			FileBytes: []byte(
 				"#!/usr/bin/env bash\nif [[ \"$a\" == \"b\" ]];then\necho ok\nfi\n",
 			),
@@ -196,7 +219,7 @@ func TestFormatReturnsErrorOnParseFailure(t *testing.T) {
 	if result.Code != dprint.FormatResultError {
 		t.Fatalf("expected format error code %d, got %d", dprint.FormatResultError, result.Code)
 	}
-	if result.Err == nil || !strings.Contains(result.Err.Error(), "must end with \"fi\"") {
+	if result.Err == nil || !strings.Contains(result.Err.Error(), "then") {
 		t.Fatalf("unexpected error text: %v", result.Err)
 	}
 }
@@ -208,7 +231,7 @@ func TestLicenseTextEmbedsFullLicenseReport(t *testing.T) {
 	if strings.TrimSpace(licenseText) == "" {
 		t.Fatal("expected non-empty license text")
 	}
-	if !strings.Contains(licenseText, "## github.com/hrko/dprint-plugin-shfmt") {
+	if !strings.Contains(licenseText, "## github.com/kjanat/dprint-plugin-shfmt") {
 		t.Fatal("expected first-party module section in embedded license text")
 	}
 	if !strings.Contains(licenseText, "BSD 3-Clause License") {
@@ -216,18 +239,19 @@ func TestLicenseTextEmbedsFullLicenseReport(t *testing.T) {
 	}
 }
 
-func TestPluginInfoUsesPluginsDprintDevURLs(t *testing.T) {
-	oldVersion := Version
-	oldReleaseTag := ReleaseTag
-	Version = "1.2.3"
-	ReleaseTag = "v1.2.3"
+func withInjectedMetadata(t *testing.T, version, tag, slug, ghRepo string) {
+	t.Helper()
+	oldV, oldT, oldS, oldG := Version, ReleaseTag, RepoSlug, GitHubRepo
+	Version, ReleaseTag, RepoSlug, GitHubRepo = version, tag, slug, ghRepo
 	t.Cleanup(func() {
-		Version = oldVersion
-		ReleaseTag = oldReleaseTag
+		Version, ReleaseTag, RepoSlug, GitHubRepo = oldV, oldT, oldS, oldG
 	})
+}
 
-	h := &handler{}
-	info := h.PluginInfo()
+func TestPluginInfoUsesUpstreamDefaults(t *testing.T) {
+	withInjectedMetadata(t, "1.2.3", "1.2.3", "hrko/shfmt", "hrko/dprint-plugin-shfmt")
+
+	info := (&handler{}).PluginInfo()
 
 	if info.UpdateURL == nil {
 		t.Fatal("expected update URL to be set")
@@ -235,7 +259,29 @@ func TestPluginInfoUsesPluginsDprintDevURLs(t *testing.T) {
 	if *info.UpdateURL != "https://plugins.dprint.dev/hrko/shfmt/latest.json" {
 		t.Fatalf("unexpected update URL: %q", *info.UpdateURL)
 	}
-	if info.ConfigSchemaURL != "https://plugins.dprint.dev/hrko/shfmt/v1.2.3/schema.json" {
+	if info.ConfigSchemaURL != "https://plugins.dprint.dev/hrko/shfmt/1.2.3/schema.json" {
 		t.Fatalf("unexpected config schema URL: %q", info.ConfigSchemaURL)
+	}
+	if info.HelpURL != "https://github.com/hrko/dprint-plugin-shfmt" {
+		t.Fatalf("unexpected help URL: %q", info.HelpURL)
+	}
+}
+
+func TestPluginInfoUsesInjectedForkMetadata(t *testing.T) {
+	withInjectedMetadata(t, "0.0.5", "0.0.5", "kjanat/shfmt", "kjanat/dprint-plugin-shfmt")
+
+	info := (&handler{}).PluginInfo()
+
+	if info.UpdateURL == nil {
+		t.Fatal("expected update URL to be set")
+	}
+	if *info.UpdateURL != "https://plugins.dprint.dev/kjanat/shfmt/latest.json" {
+		t.Fatalf("unexpected update URL: %q", *info.UpdateURL)
+	}
+	if info.ConfigSchemaURL != "https://plugins.dprint.dev/kjanat/shfmt/0.0.5/schema.json" {
+		t.Fatalf("unexpected config schema URL: %q", info.ConfigSchemaURL)
+	}
+	if info.HelpURL != "https://github.com/kjanat/dprint-plugin-shfmt" {
+		t.Fatalf("unexpected help URL: %q", info.HelpURL)
 	}
 }

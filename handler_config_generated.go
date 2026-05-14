@@ -2,7 +2,7 @@
 
 package main
 
-import "github.com/hrko/dprint-plugin-shfmt/dprint"
+import "github.com/kjanat/dprint-plugin-shfmt/dprint"
 
 var generatedConfigurationResolverSpec = dprint.ConfigResolverSpec[configuration]{
 	UInt32Fields: []dprint.UInt32ConfigFieldSpec[configuration]{
@@ -85,6 +85,17 @@ var generatedConfigurationResolverSpec = dprint.ConfigResolverSpec[configuration
 				config.Minify = value
 			},
 		},
+		{
+			Key:                 "experimentalZsh",
+			DefaultValue:        false,
+			AllowGlobalOverride: false,
+			Get: func(config configuration) bool {
+				return config.ExperimentalZsh
+			},
+			Set: func(config *configuration, value bool) {
+				config.ExperimentalZsh = value
+			},
+		},
 	},
 	KnownKeys: []string{
 		"indentWidth",
@@ -94,6 +105,7 @@ var generatedConfigurationResolverSpec = dprint.ConfigResolverSpec[configuration
 		"spaceRedirects",
 		"funcNextLine",
 		"minify",
+		"experimentalZsh",
 		"locked",
 	},
 }

@@ -4,12 +4,14 @@ Shell script formatting plugin for dprint.
 
 This uses the [`mvdan.cc/sh/v3`](https://github.com/mvdan/sh) parser and printer used by `shfmt`.
 
+> Fork of [`hrko/dprint-plugin-shfmt`](https://github.com/hrko/dprint-plugin-shfmt). BSD-3-Clause; upstream copyright preserved in [LICENSE](./LICENSE).
+
 ## Setup
 
 You can add this plugin to your dprint config with:
 
 ```sh
-dprint config add hrko/shfmt
+dprint add kjanat/shfmt
 ```
 
 ## Example config
@@ -20,7 +22,7 @@ When both global and plugin values are set for the same option, the plugin value
 
 ```json
 {
-  "plugins": ["https://plugins.dprint.dev/hrko/shfmt-v<version>.wasm"],
+  "plugins": ["https://plugins.dprint.dev/kjanat/shfmt-<version>.wasm"],
   "includes": ["**/*.sh", "**/*.bash"],
   "indentWidth": 2,
   "useTabs": false,
@@ -32,9 +34,14 @@ When both global and plugin values are set for the same option, the plugin value
 }
 ```
 
+> [!NOTE]
+> Zsh support in the underlying library is experimental ([mvdan/sh#120](https://github.com/mvdan/sh/issues/120)).\
+> To opt in, set `"shfmt": {"experimentalZsh": true}` in your dprint config.
+
 ## Configuration schema
 
 See the schema for all available options and the latest canonical definitions.
+
 - [schema.json](./schema.json)
 
 ## Development docs

@@ -1,13 +1,10 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - master
+  push: { branches: [master] }
   pull_request:
 
-permissions:
-  contents: read
+permissions: { contents: read }
 
 jobs:
   test:
@@ -18,8 +15,7 @@ jobs:
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Run tests
         run: mise run test
@@ -32,8 +28,7 @@ jobs:
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Run integration tests
         run: mise run test-integration
@@ -46,8 +41,7 @@ jobs:
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Run linter
         run: mise run lint
@@ -60,8 +54,7 @@ jobs:
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Build wasm plugin
         run: mise run build-wasm
@@ -74,8 +67,7 @@ jobs:
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Validate GoReleaser config
         run: mise run release-check

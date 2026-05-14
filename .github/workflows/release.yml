@@ -1,13 +1,10 @@
 name: release
 
 on:
-  push:
-    tags:
-      - "v*"
+  push: { tags: ["[0-9]+.[0-9]+.[0-9]+*"] }
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: { contents: write }
 
 jobs:
   release:
@@ -15,18 +12,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
+        with: { fetch-depth: 0 }
 
       - name: Setup mise and install tools
         uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
-        with:
-          install: true
+        with: { install: true }
 
       - name: Run tests
         run: mise run test
 
       - name: Publish release
         run: mise run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env: { GITHUB_TOKEN: "${{ github.token }}" }
