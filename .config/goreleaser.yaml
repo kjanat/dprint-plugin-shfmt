@@ -2,22 +2,12 @@
 ---
 version: 2
 project_name: dprint-plugin-shfmt
-metadata:
-  mod_timestamp: "{{ .CommitTimestamp }}"
-builds:
-  - id: skip-go-build
-    skip: true
-
-before:
-  hooks:
-    - go run ./dprint/cmd/build -release
-
+metadata: { mod_timestamp: "{{ .CommitTimestamp }}" }
+builds: [{ id: skip-go-build, skip: true }]
+before: { hooks: [go run ./dprint/cmd/build -release] }
 release: { extra_files: [glob: plugin.wasm, glob: .build/schema.json] }
-
 checksum:
   name_template: checksums.txt
   algorithm: sha256
   extra_files: [glob: plugin.wasm, glob: .build/schema.json]
-
-changelog:
-  use: github-native
+changelog: { use: github-native }
