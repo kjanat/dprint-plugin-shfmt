@@ -238,7 +238,7 @@ func parseJSONKey(tags reflect.StructTag, fieldName string) (string, error) {
 	return key, nil
 }
 
-func parseDescription(raw string, fieldName string, descriptionTagKey string) (string, error) {
+func parseDescription(raw, fieldName, descriptionTagKey string) (string, error) {
 	description := strings.TrimSpace(raw)
 	if description == "" {
 		return "", fmt.Errorf(
@@ -250,7 +250,7 @@ func parseDescription(raw string, fieldName string, descriptionTagKey string) (s
 	return description, nil
 }
 
-func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error) {
+func parseDprintTag(raw, kind, fieldName string) (dprintTag, error) {
 	if strings.TrimSpace(raw) == "" {
 		return dprintTag{}, fmt.Errorf("field %q must define a dprint tag", fieldName)
 	}
@@ -258,7 +258,7 @@ func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error
 	parsed := dprintTag{}
 	hasDefault := false
 
-	for _, token := range strings.Split(raw, ",") {
+	for token := range strings.SplitSeq(raw, ",") {
 		part := strings.TrimSpace(token)
 		if part == "" {
 			continue
@@ -293,7 +293,7 @@ func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error
 	return parsed, nil
 }
 
-func parseDefaultValue(value string, kind string, fieldName string) (any, error) {
+func parseDefaultValue(value, kind, fieldName string) (any, error) {
 	switch kind {
 	case kindUint32:
 		parsed, err := strconv.ParseUint(value, 10, 32)
@@ -367,7 +367,7 @@ func toSchemaProperty(field configField) (*jsonschema.Schema, error) {
 			Description: field.Description,
 			Default:     defaultValue,
 			Type:        "integer",
-			Minimum:     jsonschema.Ptr(0.0),
+			Minimum:     new(0.0),
 		}, nil
 	case kindBool:
 		return &jsonschema.Schema{

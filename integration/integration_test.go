@@ -113,7 +113,7 @@ func withCaseDefaults(tc integrationCase) integrationCase {
 	return tc
 }
 
-func loadFixture(t *testing.T, repoRoot string, fixtureName string) caseFixture {
+func loadFixture(t *testing.T, repoRoot, fixtureName string) caseFixture {
 	t.Helper()
 
 	fixtureDir := filepath.Join(repoRoot, "integration", "testdata", "cases", fixtureName)
@@ -220,7 +220,7 @@ func (r *integrationRunner) runCase(t *testing.T, tc integrationCase) {
 	}
 }
 
-func (r *integrationRunner) runFmt(t *testing.T, configPath string, virtualPath string, input string) fmtRunResult {
+func (r *integrationRunner) runFmt(t *testing.T, configPath, virtualPath, input string) fmtRunResult {
 	t.Helper()
 
 	cmd := exec.Command(

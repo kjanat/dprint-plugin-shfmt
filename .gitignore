@@ -3,6 +3,10 @@
 
 # Ignore the compiled WebAssembly plugin
 /plugin.wasm
+# Ignore release-mode build artifacts (versioned schema)
+/.build/
+# Ignore stray go-build output if someone runs `go build ./dprint/cmd/build`
+/build
 # Ignore generated artifacts used by local integration tests
 /.tmp/
 # Ignore GoReleaser output

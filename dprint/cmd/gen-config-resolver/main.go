@@ -76,7 +76,7 @@ func main() {
 	}
 }
 
-func parseStructFields(dir string, typeName string, dprintTagKey string) (string, []configField, error) {
+func parseStructFields(dir, typeName, dprintTagKey string) (string, []configField, error) {
 	pkgs, err := loadPackages(dir)
 	if err != nil {
 		return "", nil, err
@@ -119,7 +119,7 @@ func loadPackages(dir string) ([]*packages.Package, error) {
 	return pkgs, nil
 }
 
-func parseStructTypeFromFile(file *ast.File, typeName string, dprintTagKey string) ([]configField, bool, error) {
+func parseStructTypeFromFile(file *ast.File, typeName, dprintTagKey string) ([]configField, bool, error) {
 	for _, decl := range file.Decls {
 		genDecl, ok := decl.(*ast.GenDecl)
 		if !ok || genDecl.Tok != token.TYPE {
@@ -221,7 +221,7 @@ func parseJSONKey(tags reflect.StructTag, fieldName string) (string, error) {
 	return key, nil
 }
 
-func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error) {
+func parseDprintTag(raw, kind, fieldName string) (dprintTag, error) {
 	if strings.TrimSpace(raw) == "" {
 		return dprintTag{}, fmt.Errorf("field %q must define a dprint tag", fieldName)
 	}
@@ -229,7 +229,7 @@ func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error
 	parsed := dprintTag{}
 	hasDefault := false
 
-	for _, token := range strings.Split(raw, ",") {
+	for token := range strings.SplitSeq(raw, ",") {
 		part := strings.TrimSpace(token)
 		if part == "" {
 			continue
@@ -265,7 +265,7 @@ func parseDprintTag(raw string, kind string, fieldName string) (dprintTag, error
 	return parsed, nil
 }
 
-func parseDefaultValueLiteral(value string, kind string, fieldName string) (string, error) {
+func parseDefaultValueLiteral(value, kind, fieldName string) (string, error) {
 	switch kind {
 	case kindUint32:
 		parsed, err := strconv.ParseUint(value, 10, 32)
