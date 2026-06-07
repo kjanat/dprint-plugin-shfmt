@@ -39,6 +39,13 @@ Use `mise` to keep tool versions consistent.
 - Integration cases are fixture-based: each case directory contains `config.json`, `input.sh`, and `expected.stdout`.
 - No strict coverage threshold is enforced, but behavior changes should include tests at the appropriate level.
 
+## Dependency Automation
+
+- Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, dprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json` (bare `config:recommended`).
+- Renovate PRs are validated by `.github/workflows/ci.yml` (test, integration, lint, build-wasm, release-check). Review and merge manually; no automerge is configured.
+- High-risk bumps needing careful manual review even when CI is green: `mvdan.cc/sh/v3` (core formatter; past array-subscript regression) and `aqua:tinygo-org/tinygo` (Wasm compiler; `-X` ldflag injection quirk).
+- A weekly remote watchdog (`renovate-health-watchdog`, Mondays 09:00 Europe/Amsterdam) reports Renovate health and open dependency PRs into the GitHub issue titled `Dependency automation health (Renovate watchdog)`. It is report-only and never merges or edits.
+
 ## Commit & Pull Request Guidelines
 
 - Match existing commit style: short, imperative summaries (for example, `Split runtime internals into dedicated modules`).
