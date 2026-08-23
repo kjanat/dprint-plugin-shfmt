@@ -45,6 +45,14 @@
       "automerge": true
     },
     {
+      "description": "Devcontainer base image. Kept in its own PR and merged by hand: no CI job builds the devcontainer, and a branch only automerges when every update on it is automergeable, so folding this into dev tooling would silently make that group manual whenever both appear.",
+      "matchManagers": [
+        "dockerfile"
+      ],
+      "groupName": "devcontainer",
+      "automerge": false
+    },
+    {
       "description": "TinyGo compiles the plugin and mvdan.cc/sh is the formatter itself, so both get their own PR, a few days for the release to settle, and a manual merge.",
       "matchDepNames": [
         "aqua:tinygo-org/tinygo",
