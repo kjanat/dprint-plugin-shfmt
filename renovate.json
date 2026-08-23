@@ -2,5 +2,17 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "TinyGo 0.41.x only supports Go 1.19-1.26, so a 1.27 toolchain breaks build-wasm and test-integration. Drop this rule once TinyGo 0.42.0 (Go 1.27 support) is pinned.",
+      "matchDatasources": [
+        "golang-version"
+      ],
+      "matchPackageNames": [
+        "go"
+      ],
+      "allowedVersions": "<1.27"
+    }
   ]
 }
