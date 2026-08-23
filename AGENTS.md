@@ -48,7 +48,7 @@ Use `mise` to keep tool versions consistent.
 - The `go` pin (in `.config/mise.toml` and the `go.mod` directive) is capped below 1.27 by a `packageRules` entry: TinyGo 0.41.x refuses any GOROOT newer than Go 1.26, which fails `build-wasm` and `test-integration`. Lift the cap in the same change that pins TinyGo 0.42.0 or later.
 - `gomodTidy` runs after every `go.mod` update, so Renovate branches keep `go.sum` tidy on their own.
 - Match rules use `matchDepNames`, not `matchPackageNames`: the mise manager rewrites package names (`go` becomes `golang/go` on the `github-tags` datasource), so package-name rules silently miss. Verify a rule change with `npx --package renovate -- renovate --platform=local --dry-run=extract` before trusting it.
-- Renovate labels its PRs `dependencies`, and security fixes additionally `security`.
+- Renovate labels its PRs `dependencies`, and security fixes additionally `security`. Repository labels are declared in `.github/labels.yml` and synced by `.github/workflows/labels.yml` (`kjanat/github-labelmanager`) on pushes to `master` that touch that file, or via `workflow_dispatch`; PRs run the same sync in dry-run mode. Edit the file, not the GitHub UI. Labels are created and updated from the file, but only deleted when listed under `delete:`.
 - A weekly remote watchdog (`renovate-health-watchdog`, Mondays 09:00 Europe/Amsterdam) reports Renovate health and open dependency PRs into the GitHub issue titled `Dependency automation health (Renovate watchdog)`. It is report-only and never merges or edits.
 
 ## Commit & Pull Request Guidelines

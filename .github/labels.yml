@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kjanat/github-labelmanager/master/.github/labels.schema.json
+---
+labels:
+  - name: blocked
+    color: "#fb68a0"
+    description: needed resolution upstream
+
+  - name: bug
+    color: "#d73a4a"
+    description: Something isn't working
+
+  - name: cr:review
+    color: "#ff570a"
+    description: Allow CodeRabbit review
+
+  - name: cr:skip
+    color: "#ff570a"
+    description: Skip CodeRabbit review
+
+  - name: dependencies
+    color: "#0366d6"
+    description: Dependency updates
+
+  - name: documentation
+    color: "#0075ca"
+    description: Improvements or additions to documentation
+
+  - name: duplicate
+    color: "#cfd3d7"
+    description: This issue or pull request already exists
+
+  - name: enhancement
+    color: "#a2eeef"
+    description: New feature or request
+
+  - name: good first issue
+    color: "#7057ff"
+    description: Good for newcomers
+
+  - name: help wanted
+    color: "#008672"
+    description: Extra attention is needed
+
+  - name: invalid
+    color: "#e4e669"
+    description: This doesn't seem right
+
+  - name: question
+    color: "#d876e3"
+    description: Further information is requested
+
+  - name: security
+    color: "#d93f0b"
+    description: Security fix or advisory
+
+  - name: wontfix
+    color: "#ffffff"
+    description: This will not be worked on
