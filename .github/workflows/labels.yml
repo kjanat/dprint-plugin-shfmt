@@ -3,9 +3,9 @@ name: labels
 on:
   push:
     branches: [master]
-    paths: [.github/labels.yml]
+    paths: [.github/**/labels.yml]
   pull_request:
-    paths: [.github/labels.yml]
+    paths: [.github/**/labels.yml]
   workflow_dispatch:
 
 permissions: { contents: read }
