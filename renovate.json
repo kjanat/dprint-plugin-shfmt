@@ -29,27 +29,30 @@
       "groupName": "go modules"
     },
     {
-      "description": "One PR for all workflow action updates, digest re-pins included.",
+      "description": "One PR for all workflow action updates, digest re-pins included. Automerged: the PR's own CI runs with the updated action, so a broken bump cannot go green.",
       "matchManagers": [
         "github-actions"
       ],
-      "groupName": "github actions"
+      "groupName": "github actions",
+      "automerge": true
     },
     {
-      "description": "One PR for the mise-managed toolchain. The rules below pull the risky pins back out of this group.",
+      "description": "One PR for the mise-managed toolchain. Automerged: dprint is exercised by test-integration, golangci-lint by lint, goreleaser by release-check. The rules below pull the risky pins back out of this group.",
       "matchManagers": [
         "mise"
       ],
-      "groupName": "dev tooling"
+      "groupName": "dev tooling",
+      "automerge": true
     },
     {
-      "description": "TinyGo compiles the plugin and mvdan.cc/sh is the formatter itself, so both get their own PR and a few days for the release to settle.",
+      "description": "TinyGo compiles the plugin and mvdan.cc/sh is the formatter itself, so both get their own PR, a few days for the release to settle, and a manual merge.",
       "matchDepNames": [
         "aqua:tinygo-org/tinygo",
         "mvdan.cc/sh/v3"
       ],
       "groupName": null,
-      "minimumReleaseAge": "5 days"
+      "minimumReleaseAge": "5 days",
+      "automerge": false
     },
     {
       "description": "Go toolchain, in .config/mise.toml and in go.mod. TinyGo 0.41.x rejects any GOROOT newer than Go 1.26, which fails build-wasm and test-integration. Drop allowedVersions in the same change that pins TinyGo 0.42.0 or later.",
@@ -57,7 +60,8 @@
         "go"
       ],
       "groupName": null,
-      "allowedVersions": "<1.27"
+      "allowedVersions": "<1.27",
+      "automerge": false
     }
   ],
   "vulnerabilityAlerts": {
