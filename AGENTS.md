@@ -41,10 +41,14 @@ Use `mise` to keep tool versions consistent.
 
 ## Dependency Automation
 
-- Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, dprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json` (`config:recommended` plus the Go version cap below).
+- Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, dprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json`.
+- Updates are batched: Renovate runs Mondays before 06:00 (Europe/Amsterdam) and groups its PRs into `go modules` (non-major `go.mod` updates), `github actions` (including digest re-pins), and `dev tooling` (everything under `[tools]` in `.config/mise.toml`). Major `go.mod` updates and the exceptions below still get their own PR, and security advisories ignore the schedule.
 - Renovate PRs are validated by `.github/workflows/ci.yml` (test, integration, lint, build-wasm, release-check). Review and merge manually; no automerge is configured.
-- High-risk bumps needing careful manual review even when CI is green: `mvdan.cc/sh/v3` (core formatter; past array-subscript regression) and `aqua:tinygo-org/tinygo` (Wasm compiler; `-X` ldflag injection quirk).
-- The `go` pin in `.config/mise.toml` is capped below 1.27 by a `packageRules` entry in `renovate.json`: TinyGo 0.41.x refuses any GOROOT newer than Go 1.26, which fails `build-wasm` and `test-integration`. Lift the cap in the same change that pins TinyGo 0.42.0 or later.
+- High-risk bumps needing careful manual review even when CI is green: `mvdan.cc/sh/v3` (core formatter; past array-subscript regression) and `aqua:tinygo-org/tinygo` (Wasm compiler; `-X` ldflag injection quirk). Both are kept out of the groups and held for 5 days after release.
+- The `go` pin (in `.config/mise.toml` and the `go.mod` directive) is capped below 1.27 by a `packageRules` entry: TinyGo 0.41.x refuses any GOROOT newer than Go 1.26, which fails `build-wasm` and `test-integration`. Lift the cap in the same change that pins TinyGo 0.42.0 or later.
+- `gomodTidy` runs after every `go.mod` update, so Renovate branches keep `go.sum` tidy on their own.
+- Match rules use `matchDepNames`, not `matchPackageNames`: the mise manager rewrites package names (`go` becomes `golang/go` on the `github-tags` datasource), so package-name rules silently miss. Verify a rule change with `npx --package renovate -- renovate --platform=local --dry-run=extract` before trusting it.
+- Renovate labels its PRs `dependencies`, and security fixes additionally `security`.
 - A weekly remote watchdog (`renovate-health-watchdog`, Mondays 09:00 Europe/Amsterdam) reports Renovate health and open dependency PRs into the GitHub issue titled `Dependency automation health (Renovate watchdog)`. It is report-only and never merges or edits.
 
 ## Commit & Pull Request Guidelines

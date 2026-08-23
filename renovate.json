@@ -1,18 +1,72 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":semanticCommitsDisabled",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "Europe/Amsterdam",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
   ],
   "packageRules": [
     {
-      "description": "TinyGo 0.41.x only supports Go 1.19-1.26, so a 1.27 toolchain breaks build-wasm and test-integration. Drop this rule once TinyGo 0.42.0 (Go 1.27 support) is pinned.",
-      "matchDatasources": [
-        "golang-version"
+      "description": "One PR for all non-major Go module updates; majors stay on their own.",
+      "matchManagers": [
+        "gomod"
       ],
-      "matchPackageNames": [
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "go modules"
+    },
+    {
+      "description": "One PR for all workflow action updates, digest re-pins included.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
+    },
+    {
+      "description": "One PR for the mise-managed toolchain. The rules below pull the risky pins back out of this group.",
+      "matchManagers": [
+        "mise"
+      ],
+      "groupName": "dev tooling"
+    },
+    {
+      "description": "TinyGo compiles the plugin and mvdan.cc/sh is the formatter itself, so both get their own PR and a few days for the release to settle.",
+      "matchDepNames": [
+        "aqua:tinygo-org/tinygo",
+        "mvdan.cc/sh/v3"
+      ],
+      "groupName": null,
+      "minimumReleaseAge": "5 days"
+    },
+    {
+      "description": "Go toolchain, in .config/mise.toml and in go.mod. TinyGo 0.41.x rejects any GOROOT newer than Go 1.26, which fails build-wasm and test-integration. Drop allowedVersions in the same change that pins TinyGo 0.42.0 or later.",
+      "matchDepNames": [
         "go"
       ],
+      "groupName": null,
       "allowedVersions": "<1.27"
     }
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "description": "Security fixes should not wait for the Monday window.",
+    "schedule": [
+      "at any time"
+    ],
+    "addLabels": [
+      "security"
+    ]
+  }
 }
