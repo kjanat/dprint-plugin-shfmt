@@ -1,6 +1,76 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
-  ]
+    "config:recommended",
+    ":semanticCommitsDisabled",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "Europe/Amsterdam",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "packageRules": [
+    {
+      "description": "One PR for all non-major Go module updates; majors stay on their own.",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "go modules"
+    },
+    {
+      "description": "One PR for all workflow action updates, digest re-pins included. Automerged: the PR's own CI runs with the updated action, so a broken bump cannot go green.",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions",
+      "automerge": true
+    },
+    {
+      "description": "One PR for the mise-managed toolchain. Automerged: dprint is exercised by test-integration, golangci-lint by lint, goreleaser by release-check. The rules below pull the risky pins back out of this group.",
+      "matchManagers": [
+        "mise"
+      ],
+      "groupName": "dev tooling",
+      "automerge": true
+    },
+    {
+      "description": "TinyGo compiles the plugin and mvdan.cc/sh is the formatter itself, so both get their own PR, a few days for the release to settle, and a manual merge.",
+      "matchDepNames": [
+        "aqua:tinygo-org/tinygo",
+        "mvdan.cc/sh/v3"
+      ],
+      "groupName": null,
+      "minimumReleaseAge": "5 days",
+      "automerge": false
+    },
+    {
+      "description": "Go toolchain, in .config/mise.toml and in go.mod. TinyGo 0.41.x rejects any GOROOT newer than Go 1.26, which fails build-wasm and test-integration. Drop allowedVersions in the same change that pins TinyGo 0.42.0 or later.",
+      "matchDepNames": [
+        "go"
+      ],
+      "groupName": null,
+      "allowedVersions": "<1.27",
+      "automerge": false
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "description": "Security fixes should not wait for the Monday window.",
+    "schedule": [
+      "at any time"
+    ],
+    "addLabels": [
+      "security"
+    ]
+  }
 }

@@ -1,0 +1,24 @@
+name: labels
+
+on:
+  push:
+    branches: [master]
+    paths: [.github/**/labels.yml]
+  pull_request:
+    paths: [.github/**/labels.yml]
+  workflow_dispatch:
+
+permissions: { contents: read }
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, issues: write }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Sync labels
+        uses: kjanat/github-labelmanager@e968d59fb16afae3a977f7620089e14ac3bd8872 # v1.1.1
+        with:
+          dry-run: ${{ github.event_name == 'pull_request' }}
