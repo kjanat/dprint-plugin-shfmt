@@ -7,8 +7,8 @@ dprint = "0.56.1"
 # newer than Go 1.26 ("requires go version 1.19 through 1.26").
 go = "1.26.7"
 "go:github.com/google/go-licenses/v2" = "2.0.1"
-golangci-lint = "2.13.1"
-goreleaser = "2.17.1"
+golangci-lint = "2.13.2"
+goreleaser = "2.18.0"
 
 [tasks.generate]
 description = "Run go generate for code generation"
