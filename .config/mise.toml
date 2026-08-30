@@ -2,7 +2,7 @@
 
 [tools]
 "aqua:tinygo-org/tinygo" = "0.41.1"
-dprint = "0.56.1"
+dprint = "0.57.0"
 # Keep below 1.27 until TinyGo 0.42.0 ships: TinyGo 0.41.x rejects any GOROOT
 # newer than Go 1.26 ("requires go version 1.19 through 1.26").
 go = "1.26.7"
