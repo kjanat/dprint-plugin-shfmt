@@ -23,27 +23,27 @@ func TestResolveConfigDefaults(t *testing.T) {
 	if len(result.Diagnostics) != 0 {
 		t.Fatalf("expected no diagnostics, got %d", len(result.Diagnostics))
 	}
-	for _, fileExtension := range result.FileMatching.FileExtensions {
-		if fileExtension == extZsh {
-			t.Fatal("expected zsh not to be advertised by default")
-		}
+	if !result.Config.ExperimentalZsh {
+		t.Fatal("expected default experimentalZsh to be true")
+	}
+	if !slices.Contains(result.FileMatching.FileExtensions, extZsh) {
+		t.Fatal("expected zsh to be advertised by default")
 	}
 }
 
-func TestResolveConfigExperimentalZshAdvertisesExtension(t *testing.T) {
+func TestResolveConfigExperimentalZshOptOutDropsExtension(t *testing.T) {
 	h := &handler{}
 
 	result := h.ResolveConfig(
-		dprint.ConfigKeyMap{cfgKeyExperimentalZsh: true},
+		dprint.ConfigKeyMap{cfgKeyExperimentalZsh: false},
 		dprint.GlobalConfiguration{},
 	)
 
 	if len(result.Diagnostics) != 0 {
 		t.Fatalf("expected no diagnostics, got %d", len(result.Diagnostics))
 	}
-	found := slices.Contains(result.FileMatching.FileExtensions, extZsh)
-	if !found {
-		t.Fatal("expected zsh to be advertised when experimentalZsh is true")
+	if slices.Contains(result.FileMatching.FileExtensions, extZsh) {
+		t.Fatal("expected zsh not to be advertised when experimentalZsh is false")
 	}
 }
 
@@ -176,6 +176,55 @@ func TestFormatWithShfmt(t *testing.T) {
 	expected := "if [ \"$1\" = \"ok\" ]; then\n  echo ok\nfi\n"
 	if string(result.Text) != expected {
 		t.Fatalf("unexpected formatted output:\n%s", string(result.Text))
+	}
+}
+
+func TestFormatHonoursZshToggleForShebangs(t *testing.T) {
+	const zshScript = "#!/bin/zsh\ntypeset -A map\nif [[ -o interactive ]];then\necho ${(k)map}\nfi\n"
+
+	cases := []struct {
+		name            string
+		experimentalZsh bool
+		wantCode        dprint.FormatResultCode
+		wantText        string
+	}{
+		{
+			name:            "enabled formats with the zsh variant",
+			experimentalZsh: true,
+			wantCode:        dprint.FormatResultChange,
+			wantText:        "#!/bin/zsh\ntypeset -A map\nif [[ -o interactive ]]; then\n  echo ${(k)map}\nfi\n",
+		},
+		{
+			name:            "opted out the file is left untouched",
+			experimentalZsh: false,
+			wantCode:        dprint.FormatResultNoChange,
+		},
+	}
+
+	h := &handler{}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := h.Format(
+				dprint.SyncFormatRequest[configuration]{
+					FilePath:  testFileScriptSh,
+					FileBytes: []byte(zshScript),
+					Config: configuration{
+						IndentWidth:     2,
+						UseTabs:         false,
+						ExperimentalZsh: tc.experimentalZsh,
+					},
+				},
+				nil,
+			)
+
+			if result.Code != tc.wantCode {
+				t.Fatalf("expected format result code %d, got %d (err: %v)", tc.wantCode, result.Code, result.Err)
+			}
+			if tc.wantText != "" && string(result.Text) != tc.wantText {
+				t.Fatalf("unexpected formatted output:\n%s", string(result.Text))
+			}
+		})
 	}
 }
 

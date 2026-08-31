@@ -35,8 +35,9 @@ When both global and plugin values are set for the same option, the plugin value
 ```
 
 > [!NOTE]
-> Zsh support in the underlying library is experimental ([mvdan/sh `zsh` label](https://github.com/mvdan/sh/labels/zsh)).\
-> To opt in, set `"shfmt": {"experimentalZsh": true}` in your dprint config.
+> Zsh formatting is on by default, but support in the underlying library is still experimental ([mvdan/sh `zsh` label](https://github.com/mvdan/sh/labels/zsh)).\
+> To opt out, set `"shfmt": {"experimentalZsh": false}` in your dprint config.\
+> Once opted out, `.zsh` files are not claimed by the plugin and a zsh shebang in any other file is left unformatted.
 
 ## Configuration schema
 

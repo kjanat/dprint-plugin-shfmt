@@ -70,8 +70,10 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "array-subscript-redirect", virtualPath: "sample.bash"},
 		{name: "mksh-extension", virtualPath: "sample.mksh"},
 		{name: "bats-extension", virtualPath: "sample.bats"},
-		{name: "zsh-extension-with-opt-in", virtualPath: "sample.zsh"},
-		{name: "zsh-extension-without-opt-in", virtualPath: "sample.zsh"},
+		{name: "zsh-extension-enabled-by-default", virtualPath: "sample.zsh"},
+		{name: "zsh-extension-opted-out", virtualPath: "sample.zsh"},
+		{name: "zsh-shebang-enabled-by-default"},
+		{name: "zsh-shebang-opted-out"},
 		{
 			name:           "sh-shebang-overrides-bash-extension",
 			virtualPath:    "sample.bash",

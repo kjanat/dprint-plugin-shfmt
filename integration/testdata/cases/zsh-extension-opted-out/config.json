@@ -3,6 +3,6 @@
   "shfmt": {
     "indentWidth": 2,
     "useTabs": false,
-    "experimentalZsh": true
+    "experimentalZsh": false
   }
 }
