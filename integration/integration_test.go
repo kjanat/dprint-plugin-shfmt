@@ -66,6 +66,8 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "unknown-property-diagnostic", exitCode: 1, stderrContains: []string{"Unknown property 'unknownField'.", "Had 1 configuration errors."}},
 		{name: "repeated-invocations-same-cache", repeat: 3},
 		{name: "deep-nesting-stress", virtualPath: "sample.bash"},
+		{name: "arithmetic-negation-spacing", virtualPath: "sample.bash"},
+		{name: "array-subscript-redirect", virtualPath: "sample.bash"},
 	}
 
 	for _, tc := range cases {

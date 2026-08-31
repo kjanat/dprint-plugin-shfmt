@@ -1,0 +1,3 @@
+if ((!count)); then
+  echo empty
+fi

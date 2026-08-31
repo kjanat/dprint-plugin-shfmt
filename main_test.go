@@ -179,6 +179,64 @@ func TestFormatWithShfmt(t *testing.T) {
 	}
 }
 
+func TestFormatAppliesUpstreamSyntaxBehavior(t *testing.T) {
+	cases := []struct {
+		name     string
+		filePath string
+		input    string
+		expected string
+	}{
+		{
+			name:     "space after arithmetic negation",
+			filePath: testFileScriptBash,
+			input:    "if ((!count)); then\n  echo empty\nfi\n",
+			expected: "if ((! count)); then\n  echo empty\nfi\n",
+		},
+		{
+			name:     "array element in brace redirect",
+			filePath: testFileScriptBash,
+			input:    "exec {fds[3]}>&-\n",
+			expected: "exec {fds[3]}>&-\n",
+		},
+		{
+			name:     "pound sign in associative array key",
+			filePath: testFileScriptBash,
+			input:    "echo \"${args[cmd,#]}\"\n",
+			expected: "echo \"${args[cmd,#]}\"\n",
+		},
+	}
+
+	h := &handler{}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := h.Format(
+				dprint.SyncFormatRequest[configuration]{
+					FilePath:  tc.filePath,
+					FileBytes: []byte(tc.input),
+					Config: configuration{
+						IndentWidth: 2,
+						UseTabs:     false,
+					},
+				},
+				nil,
+			)
+
+			if result.Code == dprint.FormatResultError {
+				t.Fatalf("expected input to parse, got error: %v", result.Err)
+			}
+
+			formatted := tc.input
+			if result.Code == dprint.FormatResultChange {
+				formatted = string(result.Text)
+			}
+			if formatted != tc.expected {
+				t.Fatalf("unexpected formatted output:\n%s", formatted)
+			}
+		})
+	}
+}
+
 func TestFormatDetectsBashShebang(t *testing.T) {
 	h := &handler{}
 
