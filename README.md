@@ -35,7 +35,7 @@ When both global and plugin values are set for the same option, the plugin value
 ```
 
 > [!NOTE]
-> Zsh support in the underlying library is experimental ([mvdan/sh#120](https://github.com/mvdan/sh/issues/120)).\
+> Zsh support in the underlying library is experimental ([mvdan/sh `zsh` label](https://github.com/mvdan/sh/labels/zsh)).\
 > To opt in, set `"shfmt": {"experimentalZsh": true}` in your dprint config.
 
 ## Configuration schema
