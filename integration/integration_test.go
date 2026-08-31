@@ -68,6 +68,16 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "deep-nesting-stress", virtualPath: "sample.bash"},
 		{name: "arithmetic-negation-spacing", virtualPath: "sample.bash"},
 		{name: "array-subscript-redirect", virtualPath: "sample.bash"},
+		{name: "mksh-extension", virtualPath: "sample.mksh"},
+		{name: "bats-extension", virtualPath: "sample.bats"},
+		{name: "zsh-extension-with-opt-in", virtualPath: "sample.zsh"},
+		{name: "zsh-extension-without-opt-in", virtualPath: "sample.zsh"},
+		{
+			name:           "sh-shebang-overrides-bash-extension",
+			virtualPath:    "sample.bash",
+			exitCode:       1,
+			stderrContains: []string{"arrays are a bash/mksh/zsh feature"},
+		},
 	}
 
 	for _, tc := range cases {
