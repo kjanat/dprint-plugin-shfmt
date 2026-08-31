@@ -8,7 +8,7 @@ formatters:
     gci: { sections: [standard, default, localmodule] }
     gofumpt:
       module-path: github.com/kjanat/dprint-plugin-shfmt
-      extra-rules: true
+      extra: { group-params: true }
     goimports: { local-prefixes: [github.com/kjanat/dprint-plugin-shfmt] }
 
 linters:
