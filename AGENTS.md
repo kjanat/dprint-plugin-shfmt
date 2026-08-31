@@ -44,7 +44,7 @@ Use `mise` to keep tool versions consistent.
 - Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, dprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json`.
 - Updates are batched: Renovate runs Mondays before 06:00 (Europe/Amsterdam) and groups its PRs into `go modules` (non-major `go.mod` updates), `github actions` (including digest re-pins), `dev tooling` (everything under `[tools]` in `.config/mise.toml`), and `devcontainer` (the `.devcontainer/Dockerfile` base image). Major `go.mod` updates and the exceptions below still get their own PR, and security advisories ignore the schedule.
 - Renovate PRs are validated by `.github/workflows/ci.yml` (test, integration, lint, build-wasm, release-check).
-- The `github actions` and `dev tooling` groups automerge once CI is green, because CI actually exercises them: action bumps run in the PR's own workflows, `dprint` is driven by `test-integration`, `golangci-lint` by `lint`, `goreleaser` by `release-check`. Everything else — `go modules`, the Go toolchain, TinyGo, `mvdan.cc/sh/v3` — is reviewed and merged by hand. Merging is not releasing: artifacts are published only when a `v*` tag is pushed.
+- The `github actions` and `dev tooling` groups automerge once CI is green, because CI actually exercises them: action bumps run in the PR's own workflows, `dprint` is driven by `test-integration`, `golangci-lint` by `lint`, `goreleaser` by `release-check`. Everything else — `go modules`, the Go toolchain, TinyGo, `mvdan.cc/sh/v3` — is reviewed and merged by hand. Merging is not releasing: artifacts are published only when a version tag is pushed.
 - High-risk bumps needing careful manual review even when CI is green: `mvdan.cc/sh/v3` (core formatter; past array-subscript regression) and `aqua:tinygo-org/tinygo` (Wasm compiler; `-X` ldflag injection quirk). Both are kept out of the groups and held for 5 days after release.
 - The `go` pin (in `.config/mise.toml` and the `go.mod` directive) is capped below 1.27 by a `packageRules` entry: TinyGo 0.41.x refuses any GOROOT newer than Go 1.26, which fails `build-wasm` and `test-integration`. Lift the cap in the same change that pins TinyGo 0.42.0 or later.
 - `gomodTidy` runs after every `go.mod` update, so Renovate branches keep `go.sum` tidy on their own.
@@ -66,11 +66,12 @@ Use `mise` to keep tool versions consistent.
 
 ## Release Procedure
 
-- Official releases are created by GitHub Actions when a tag matching `v*` is pushed (see `.github/workflows/release.yml`).
+- Official releases are created by GitHub Actions when a tag matching `[0-9]+.[0-9]+.[0-9]+*` is pushed (see `.github/workflows/release.yml`).
+- Tags carry **no** `v` prefix. A `v`-prefixed tag does not match the workflow trigger and publishes nothing; the `v0.0.1`-`v0.0.4` tags predate this repository's own releases, which start at `0.0.5`.
 - Recommended flow:
   1. Run checks locally (`mise run lint`, `mise run test`, and optionally `mise run test-integration`).
-  2. Create a version tag (for example, `git tag -a v0.0.1 -m "v0.0.1"`).
-  3. Push the tag (`git push origin v0.0.1`).
+  2. Create a version tag (for example, `git tag -a X.Y.Z -m "X.Y.Z"`).
+  3. Push the tag (`git push origin X.Y.Z`).
 - Do not rely on local `mise run release` for normal releases; CI provides `GITHUB_TOKEN` and publishes the release automatically.
 
 ## Documentation Language & Sandbox Constraints
