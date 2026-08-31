@@ -6,14 +6,14 @@ import "github.com/kjanat/dprint-plugin-shfmt/dprint"
 //go:generate go run github.com/kjanat/dprint-plugin-shfmt/dprint/cmd/gen-json-schema -type configuration -out schema.json -schema-id https://plugins.dprint.dev/kjanat/shfmt/latest/schema.json -include-locked -locked-description "Whether the configuration is not allowed to be overridden or extended."
 
 type configuration struct {
-	IndentWidth      uint32 `description:"Number of spaces per indentation level when not using tabs."                                                                                      dprint:"default=2,global"     json:"indentWidth"`
-	UseTabs          bool   `description:"Whether to use tabs for indentation."                                                                                                             dprint:"default=false,global" json:"useTabs"`
-	BinaryNextLine   bool   `description:"Whether binary operators should be placed at the start of the next line when line wrapping occurs."                                               dprint:"default=false"        json:"binaryNextLine"`
-	SwitchCaseIndent bool   `description:"Whether switch case bodies should be indented."                                                                                                   dprint:"default=false"        json:"switchCaseIndent"`
-	SpaceRedirects   bool   `description:"Whether to insert a space after redirection operators."                                                                                           dprint:"default=false"        json:"spaceRedirects"`
-	FuncNextLine     bool   `description:"Whether to place function opening braces on the next line."                                                                                       dprint:"default=false"        json:"funcNextLine"`
-	Minify           bool   `description:"Whether to minify shell scripts when printing."                                                                                                   dprint:"default=false"        json:"minify"`
-	ExperimentalZsh  bool   `description:"Whether to format Zsh scripts, by .zsh extension or zsh shebang. On by default; set false to opt out while upstream Zsh support is experimental." dprint:"default=true"         json:"experimentalZsh"`
+	IndentWidth      uint32 `description:"Number of spaces per indentation level when not using tabs."                                        dprint:"default=2,global"     json:"indentWidth"`
+	UseTabs          bool   `description:"Whether to use tabs for indentation."                                                               dprint:"default=false,global" json:"useTabs"`
+	BinaryNextLine   bool   `description:"Whether binary operators should be placed at the start of the next line when line wrapping occurs." dprint:"default=false"        json:"binaryNextLine"`
+	SwitchCaseIndent bool   `description:"Whether switch case bodies should be indented."                                                     dprint:"default=false"        json:"switchCaseIndent"`
+	SpaceRedirects   bool   `description:"Whether to insert a space after redirection operators."                                             dprint:"default=false"        json:"spaceRedirects"`
+	FuncNextLine     bool   `description:"Whether to place function opening braces on the next line."                                         dprint:"default=false"        json:"funcNextLine"`
+	Minify           bool   `description:"Whether to minify shell scripts when printing."                                                     dprint:"default=false"        json:"minify"`
+	ExperimentalZsh  bool   `description:"Whether to format Zsh scripts, by .zsh extension or zsh shebang."                                   dprint:"default=true"         json:"experimentalZsh"`
 }
 
 var fileExtensions = []string{extSh, extBash, extMksh, extBats}

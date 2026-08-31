@@ -43,7 +43,7 @@
     },
     "experimentalZsh": {
       "type": "boolean",
-      "description": "Whether to format Zsh scripts, by .zsh extension or zsh shebang. On by default; set false to opt out while upstream Zsh support is experimental.",
+      "description": "Whether to format Zsh scripts, by .zsh extension or zsh shebang.",
       "default": true
     }
   },
