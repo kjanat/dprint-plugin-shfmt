@@ -12,8 +12,17 @@ func (h *handler) Format(
 	request dprint.SyncFormatRequest[configuration],
 	_ dprint.HostFormatFunc,
 ) dprint.FormatResult {
+	variant := detectVariant(request.FilePath, request.FileBytes)
+
+	// The .zsh extension is only advertised while experimentalZsh is set, but a
+	// zsh shebang reaches this handler through any advertised extension. Honour
+	// the opt-out for both routes and leave such files untouched.
+	if variant == syntax.LangZsh && !request.Config.ExperimentalZsh {
+		return dprint.NoChange()
+	}
+
 	parser := syntax.NewParser(
-		syntax.Variant(detectVariant(request.FilePath, request.FileBytes)),
+		syntax.Variant(variant),
 		syntax.KeepComments(true),
 	)
 	prog, err := parser.Parse(bytes.NewReader(request.FileBytes), request.FilePath)

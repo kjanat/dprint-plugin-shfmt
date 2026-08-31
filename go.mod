@@ -2,7 +2,7 @@ module github.com/kjanat/dprint-plugin-shfmt
 
 go 1.26.3
 
-require mvdan.cc/sh/v3 v3.13.1
+require mvdan.cc/sh/v3 v3.14.0
 
 require (
 	github.com/google/jsonschema-go v0.4.3

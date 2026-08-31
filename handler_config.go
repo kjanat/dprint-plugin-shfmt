@@ -13,7 +13,7 @@ type configuration struct {
 	SpaceRedirects   bool   `description:"Whether to insert a space after redirection operators."                                             dprint:"default=false"        json:"spaceRedirects"`
 	FuncNextLine     bool   `description:"Whether to place function opening braces on the next line."                                         dprint:"default=false"        json:"funcNextLine"`
 	Minify           bool   `description:"Whether to minify shell scripts when printing."                                                     dprint:"default=false"        json:"minify"`
-	ExperimentalZsh  bool   `description:"Whether to format .zsh files. Zsh support in the underlying library is experimental."               dprint:"default=false"        json:"experimentalZsh"`
+	ExperimentalZsh  bool   `description:"Whether to format Zsh scripts, by .zsh extension or zsh shebang."                                   dprint:"default=true"         json:"experimentalZsh"`
 }
 
 var fileExtensions = []string{extSh, extBash, extMksh, extBats}

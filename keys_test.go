@@ -9,5 +9,6 @@ const (
 	cfgKeySpaceRedirects   = "spaceRedirects"
 	cfgKeyExperimentalZsh  = "experimentalZsh"
 
-	testFileScriptSh = "script.sh"
+	testFileScriptSh   = "script.sh"
+	testFileScriptBash = "script.bash"
 )

@@ -87,7 +87,7 @@ var generatedConfigurationResolverSpec = dprint.ConfigResolverSpec[configuration
 		},
 		{
 			Key:                 "experimentalZsh",
-			DefaultValue:        false,
+			DefaultValue:        true,
 			AllowGlobalOverride: false,
 			Get: func(config configuration) bool {
 				return config.ExperimentalZsh

@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -66,6 +67,20 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "unknown-property-diagnostic", exitCode: 1, stderrContains: []string{"Unknown property 'unknownField'.", "Had 1 configuration errors."}},
 		{name: "repeated-invocations-same-cache", repeat: 3},
 		{name: "deep-nesting-stress", virtualPath: "sample.bash"},
+		{name: "arithmetic-negation-spacing", virtualPath: "sample.bash"},
+		{name: "array-subscript-redirect", virtualPath: "sample.bash"},
+		{name: "mksh-extension", virtualPath: "sample.mksh"},
+		{name: "bats-extension", virtualPath: "sample.bats"},
+		{name: "zsh-extension-enabled-by-default", virtualPath: "sample.zsh"},
+		{name: "zsh-extension-opted-out", virtualPath: "sample.zsh"},
+		{name: "zsh-shebang-enabled-by-default"},
+		{name: "zsh-shebang-opted-out"},
+		{
+			name:           "sh-shebang-overrides-bash-extension",
+			virtualPath:    "sample.bash",
+			exitCode:       1,
+			stderrContains: []string{"arrays are a bash/mksh/zsh feature"},
+		},
 	}
 
 	for _, tc := range cases {
@@ -73,6 +88,56 @@ func TestDprintPluginIntegration(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			runner.runCase(t, tc)
 		})
+	}
+}
+
+// TestDprintPluginZshExtensionClaim distinguishes a .zsh file the plugin never
+// receives from one it receives and leaves unchanged. Both look identical on
+// stdout, so assert against the paths dprint resolves for the plugin instead.
+func TestDprintPluginZshExtensionClaim(t *testing.T) {
+	runner := newIntegrationRunner(t)
+
+	cases := []struct {
+		name        string
+		config      string
+		wantZshPath bool
+	}{
+		{
+			name:        "claimed by default",
+			config:      "{\n  \"includes\": [\"**/*.sh\", \"**/*.zsh\"],\n  \"shfmt\": { \"indentWidth\": 2 }\n}\n",
+			wantZshPath: true,
+		},
+		{
+			name:        "not claimed once opted out",
+			config:      "{\n  \"includes\": [\"**/*.sh\", \"**/*.zsh\"],\n  \"shfmt\": { \"indentWidth\": 2, \"experimentalZsh\": false }\n}\n",
+			wantZshPath: false,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			projectDir := t.TempDir()
+			writeFile(t, filepath.Join(projectDir, "dprint.json"), tc.config)
+			writeFile(t, filepath.Join(projectDir, "sample.sh"), "echo ok\n")
+			writeFile(t, filepath.Join(projectDir, "sample.zsh"), "echo ok\n")
+
+			paths := runner.runOutputFilePaths(t, projectDir)
+
+			if !slices.Contains(paths, "sample.sh") {
+				t.Fatalf("expected sample.sh to be claimed, got %v", paths)
+			}
+			if got := slices.Contains(paths, "sample.zsh"); got != tc.wantZshPath {
+				t.Fatalf("sample.zsh claimed = %v, want %v (paths: %v)", got, tc.wantZshPath, paths)
+			}
+		})
+	}
+}
+
+func writeFile(t *testing.T, path, content string) {
+	t.Helper()
+
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("failed to write %s: %v", path, err)
 	}
 }
 
@@ -255,6 +320,42 @@ func (r *integrationRunner) runFmt(t *testing.T, configPath, virtualPath, input 
 		stdout:      stdout.String(),
 		cleanStderr: cleanStderr(stderr.String()),
 	}
+}
+
+// runOutputFilePaths returns the paths dprint resolves for the plugin, relative
+// to projectDir.
+func (r *integrationRunner) runOutputFilePaths(t *testing.T, projectDir string) []string {
+	t.Helper()
+
+	cmd := exec.Command(
+		"dprint",
+		"output-file-paths",
+		"--log-level", "info",
+		"--config", filepath.Join(projectDir, "dprint.json"),
+		"--plugins", r.wasmPath,
+	)
+	cmd.Dir = projectDir
+	cmd.Env = r.env
+
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		t.Fatalf("failed to run dprint output-file-paths: %v\nstderr:\n%s", err, cleanStderr(stderr.String()))
+	}
+
+	var paths []string
+	for _, line := range strings.Split(stdout.String(), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		paths = append(paths, filepath.Base(line))
+	}
+
+	return paths
 }
 
 func (r *integrationRunner) runLicense(t *testing.T) fmtRunResult {

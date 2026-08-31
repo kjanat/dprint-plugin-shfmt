@@ -1,0 +1,4 @@
+@test "adds numbers" {
+  run echo 1
+  [ "$status" -eq 0 ]
+}
