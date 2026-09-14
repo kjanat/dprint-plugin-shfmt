@@ -21,6 +21,11 @@ jobs:
       - name: Run tests
         run: mise run test
 
+      - name: Resolve shfmt engine version
+        run: |
+          version="$(go list -m -f '{{.Version}}' mvdan.cc/sh/v3)"
+          echo "SHFMT_VERSION=${version}" >> "${GITHUB_ENV}"
+
       - name: Publish release
         run: mise run release
         env: { GITHUB_TOKEN: "${{ github.token }}" }
