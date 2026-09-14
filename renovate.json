@@ -63,12 +63,11 @@
       "automerge": false
     },
     {
-      "description": "Go toolchain, in .config/mise.toml and in go.mod. TinyGo 0.41.x rejects any GOROOT newer than Go 1.26, which fails build-wasm and test-integration. Drop allowedVersions in the same change that pins TinyGo 0.42.0 or later.",
+      "description": "Go toolchain, in .config/mise.toml and in go.mod. TinyGo caps the GOROOT it accepts, so the pin stays in its own PR and is merged by hand once the pinned TinyGo supports the new release.",
       "matchDepNames": [
         "go"
       ],
       "groupName": null,
-      "allowedVersions": "<1.27",
       "automerge": false
     }
   ],
