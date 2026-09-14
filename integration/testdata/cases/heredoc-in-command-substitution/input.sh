@@ -1,0 +1,8 @@
+f() {
+	cat <<-OUT
+		$(cat <<IN
+inner
+IN
+		)
+	OUT
+}

@@ -69,6 +69,7 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "deep-nesting-stress", virtualPath: "sample.bash"},
 		{name: "arithmetic-negation-spacing", virtualPath: "sample.bash"},
 		{name: "array-subscript-redirect", virtualPath: "sample.bash"},
+		{name: "heredoc-in-command-substitution", virtualPath: "sample.bash"},
 		{name: "mksh-extension", virtualPath: "sample.mksh"},
 		{name: "bats-extension", virtualPath: "sample.bats"},
 		{name: "zsh-extension-enabled-by-default", virtualPath: "sample.zsh"},
