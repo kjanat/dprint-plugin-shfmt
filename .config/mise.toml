@@ -4,7 +4,7 @@
 dprint = "0.57.4"
 go = "1.27.1"
 go-licenses = "2.0.1"
-golangci-lint = "2.13.2"
+golangci-lint = "2.14.0"
 goreleaser = "2.18.2"
 tinygo = "0.42.0"
 
