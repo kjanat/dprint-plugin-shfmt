@@ -1,10 +1,10 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [tools]
-dprint = "0.63.0"
+dprint = "0.64.0"
 go = "1.27.1"
 go-licenses = "2.0.1"
-golangci-lint = "2.14.0"
+golangci-lint = "2.15.0"
 goreleaser = "2.18.3"
 tinygo = "0.43.0"
 
