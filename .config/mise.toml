@@ -1,7 +1,7 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [tools]
-"github:kjanat/dprint = "latest"
+"github:kjanat/dprint" = "latest"
 go = "latest"
 go-licenses = "2.0.1"
 golangci-lint = "2.15.0"
