@@ -1,8 +1,8 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [tools]
-dprint = "0.64.0"
-go = "1.27.3"
+"github:kjanat/dprint = "latest"
+go = "latest"
 go-licenses = "2.0.1"
 golangci-lint = "2.15.0"
 goreleaser = "2.18.3"
@@ -11,6 +11,13 @@ tinygo = "0.43.0"
 [tool_alias]
 go-licenses = "go:github.com/google/go-licenses/v2"
 tinygo = "aqua:tinygo-org/tinygo"
+
+[settings]
+prereleases = true
+experimental = true
+minimum_release_age = "0s"
+idiomatic_version_file_enable_tools = ["go"]
+idiomatic_version_file_ignore_minimum_versions = true
 
 [tasks.generate]
 description = "Run go generate for code generation"
