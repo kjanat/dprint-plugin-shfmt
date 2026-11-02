@@ -6,7 +6,7 @@ go = "latest"
 go-licenses = "2.0.1"
 golangci-lint = "2.15.0"
 goreleaser = "2.19.0"
-tinygo = "0.43.0"
+tinygo = "0.44.0"
 
 [tool_alias]
 go-licenses = "go:github.com/google/go-licenses/v2"
