@@ -11,7 +11,9 @@
   "labels": [
     "dependencies"
   ],
-  "dependencyDashboardAutoclose": true,
+  "dependencyDashboard": {
+    "autoclose": true
+  },
   "postUpdateOptions": [
     "gomodTidy"
   ],
