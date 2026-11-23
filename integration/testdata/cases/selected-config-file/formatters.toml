@@ -1,0 +1,3 @@
+[tool.shfmt]
+indentWidth = 4
+useTabs = true

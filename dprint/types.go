@@ -44,6 +44,9 @@ type PluginInfo struct {
 	ConfigSchemaURL string `json:"configSchemaUrl"`
 	// UpdateURL points to the latest update manifest JSON.
 	UpdateURL *string `json:"updateUrl,omitempty"`
+	// ConfigFiles lists names kprint may discover. Nil leaves discovery unsupported;
+	// a pointer to an empty slice enables explicit selection only.
+	ConfigFiles *[]string `json:"configFiles,omitempty"`
 }
 
 // FileMatchingInfo declares which files are handled by this plugin.
