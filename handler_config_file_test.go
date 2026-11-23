@@ -11,7 +11,7 @@ func TestMalformedConfigFileReportsConfigDiagnostic(t *testing.T) {
 	for _, content := range []string{"", "null", "[]"} {
 		config := dprint.ConfigKeyMap{
 			configFilePayloadKey: map[string]any{"content": content},
-			cfgKeyIndentWidth:   6,
+			cfgKeyIndentWidth:    6,
 		}
 		result := h.ResolveConfig(config, nil)
 		if len(result.Diagnostics) != 1 || result.Diagnostics[0]["propertyName"] != "configFile" {
