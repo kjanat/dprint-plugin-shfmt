@@ -298,7 +298,7 @@ func (r *integrationRunner) runFmt(t *testing.T, configPath, virtualPath, input 
 		"--plugins", r.wasmPath,
 		"--stdin", virtualPath,
 	)
-	cmd.Dir = r.repoRoot
+	cmd.Dir = filepath.Dir(configPath)
 	cmd.Env = r.env
 	cmd.Stdin = strings.NewReader(input)
 
