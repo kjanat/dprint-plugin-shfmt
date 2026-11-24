@@ -37,7 +37,7 @@
       "automerge": true
     },
     {
-      "description": "One PR for the mise-managed toolchain. Automerged: dprint is exercised by test-integration, golangci-lint by lint, goreleaser by release-check. The rules below pull the risky pins back out of this group.",
+      "description": "One PR for the mise-managed toolchain. Automerged: kprint is exercised by test-integration, golangci-lint by lint, goreleaser by release-check. The rules below pull the risky pins back out of this group.",
       "matchManagers": [
         "mise"
       ],

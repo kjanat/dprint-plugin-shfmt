@@ -27,6 +27,7 @@ func (h *handler) PluginInfo() dprint.PluginInfo {
 	slug := orDefault(RepoSlug, defaultRepoSlug)
 	updateURL := fmt.Sprintf("https://plugins.dprint.dev/%s/latest.json", slug)
 
+	configFiles := []string{}
 	return dprint.PluginInfo{
 		Name:            pluginName,
 		Version:         orDefault(Version, defaultVersion),
@@ -34,6 +35,7 @@ func (h *handler) PluginInfo() dprint.PluginInfo {
 		HelpURL:         fmt.Sprintf("https://github.com/%s", orDefault(GitHubRepo, defaultGitHubRepo)),
 		ConfigSchemaURL: fmt.Sprintf("https://plugins.dprint.dev/%s/%s/schema.json", slug, orDefault(ReleaseTag, defaultVersion)),
 		UpdateURL:       &updateURL,
+		ConfigFiles:     &configFiles,
 	}
 }
 

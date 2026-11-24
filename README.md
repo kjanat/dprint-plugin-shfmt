@@ -39,6 +39,15 @@ When both global and plugin values are set for the same option, the plugin value
 > To opt out, set `"shfmt": {"experimentalZsh": false}` in your dprint config.\
 > Once opted out, `.zsh` files are not claimed by the plugin and a zsh shebang in any other file is left unformatted.
 
+### Shared configuration with kprint
+
+With kprint, set `shfmt.configFile` to a JSON, YAML, or TOML file. Use a fragment
+to select a table from a shared file: `"configFile": "formatters.toml#tool.shfmt"`
+loads the `[tool.shfmt]` table. Use the same option names as in the inline
+`shfmt` object. Inline plugin options take precedence over file options, which
+take precedence over the global defaults. The plugin does not look for
+configuration files on its own. Use inline options with upstream dprint.
+
 ## Configuration schema
 
 See the schema for all available options and the latest canonical definitions.

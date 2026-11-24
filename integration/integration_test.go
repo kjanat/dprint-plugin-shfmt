@@ -56,6 +56,7 @@ func TestDprintPluginIntegration(t *testing.T) {
 		{name: "variant-bash-succeeds-for-bash-array", virtualPath: "sample.bash"},
 		{name: "shebang-precedence"},
 		{name: "plugin-overrides-global"},
+		{name: "selected-config-file"},
 		{name: "comment-and-shebang-preservation"},
 		{name: "use-tabs-option"},
 		{name: "binary-next-line-option"},
@@ -290,14 +291,14 @@ func (r *integrationRunner) runFmt(t *testing.T, configPath, virtualPath, input 
 	t.Helper()
 
 	cmd := exec.Command(
-		"dprint",
+		"kprint",
 		"fmt",
 		"--log-level", "info",
 		"--config", configPath,
 		"--plugins", r.wasmPath,
 		"--stdin", virtualPath,
 	)
-	cmd.Dir = r.repoRoot
+	cmd.Dir = filepath.Dir(configPath)
 	cmd.Env = r.env
 	cmd.Stdin = strings.NewReader(input)
 
@@ -311,7 +312,7 @@ func (r *integrationRunner) runFmt(t *testing.T, configPath, virtualPath, input 
 	if runErr != nil {
 		var exitErr *exec.ExitError
 		if !errors.As(runErr, &exitErr) {
-			t.Fatalf("failed to run dprint fmt: %v", runErr)
+			t.Fatalf("failed to run kprint fmt: %v", runErr)
 		}
 		exitCode = exitErr.ExitCode()
 	}
@@ -329,7 +330,7 @@ func (r *integrationRunner) runOutputFilePaths(t *testing.T, projectDir string) 
 	t.Helper()
 
 	cmd := exec.Command(
-		"dprint",
+		"kprint",
 		"output-file-paths",
 		"--log-level", "info",
 		"--config", filepath.Join(projectDir, "dprint.json"),
@@ -344,7 +345,7 @@ func (r *integrationRunner) runOutputFilePaths(t *testing.T, projectDir string) 
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		t.Fatalf("failed to run dprint output-file-paths: %v\nstderr:\n%s", err, cleanStderr(stderr.String()))
+		t.Fatalf("failed to run kprint output-file-paths: %v\nstderr:\n%s", err, cleanStderr(stderr.String()))
 	}
 
 	var paths []string
@@ -363,7 +364,7 @@ func (r *integrationRunner) runLicense(t *testing.T) fmtRunResult {
 	t.Helper()
 
 	cmd := exec.Command(
-		"dprint",
+		"kprint",
 		"license",
 		"--log-level", "info",
 		"--plugins", r.wasmPath,
@@ -381,7 +382,7 @@ func (r *integrationRunner) runLicense(t *testing.T) fmtRunResult {
 	if runErr != nil {
 		var exitErr *exec.ExitError
 		if !errors.As(runErr, &exitErr) {
-			t.Fatalf("failed to run dprint license: %v", runErr)
+			t.Fatalf("failed to run kprint license: %v", runErr)
 		}
 		exitCode = exitErr.ExitCode()
 	}

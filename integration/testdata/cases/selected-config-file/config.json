@@ -1,0 +1,8 @@
+{
+  "includes": ["**/*.sh"],
+  "indentWidth": 8,
+  "shfmt": {
+    "configFile": "formatters.toml#tool.shfmt",
+    "useTabs": false
+  }
+}

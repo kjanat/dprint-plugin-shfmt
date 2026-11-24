@@ -15,10 +15,10 @@ This repository implements a dprint Wasm plugin for `shfmt` in Go/TinyGo.
 
 Use `mise` to keep tool versions consistent.
 
-- `mise install`: install pinned tools (Go, TinyGo, golangci-lint, dprint, goreleaser).
+- `mise install`: install pinned tools (Go, TinyGo, golangci-lint, kprint, goreleaser).
 - `mise run generate`: run `go generate ./...` for boilerplate, config resolver, and schema outputs.
 - `mise run lint-fix`: run `golangci-lint run --fix ./...` for auto-fix and formatting.
-- `mise run fmt-dprint`: format Markdown/JSON/TOML/YAML files via dprint.
+- `mise run fmt-dprint`: format Markdown/JSON/TOML/YAML files via kprint.
 - `mise run lint`: run `golangci-lint` (includes `gofumpt`, `gci`, and enabled linters).
 - `mise run test`: run unit tests (`go test ./...`).
 - `mise run test-integration`: run integration tests with `-tags=integration`.
@@ -41,10 +41,10 @@ Use `mise` to keep tool versions consistent.
 
 ## Dependency Automation
 
-- Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, dprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json`.
+- Dependencies are kept current by the **Renovate** GitHub App (installed, scoped to this repo). It opens PRs for `go.mod` modules, `[tools]` pins in `.config/mise.toml` (TinyGo, kprint, Go, go-licenses, golangci-lint, goreleaser), and pinned GitHub Actions. Config: `renovate.json`.
 - Updates are batched: Renovate runs Mondays before 06:00 (Europe/Amsterdam) and groups its PRs into `go modules` (non-major `go.mod` updates), `github actions` (including digest re-pins), `dev tooling` (everything under `[tools]` in `.config/mise.toml`), and `devcontainer` (the `.devcontainer/Dockerfile` base image). Major `go.mod` updates and the exceptions below still get their own PR, and security advisories ignore the schedule.
 - Renovate PRs are validated by `.github/workflows/ci.yml` (test, integration, lint, build-wasm, release-check).
-- The `github actions` and `dev tooling` groups automerge once CI is green, because CI actually exercises them: action bumps run in the PR's own workflows, `dprint` is driven by `test-integration`, `golangci-lint` by `lint`, `goreleaser` by `release-check`. Everything else — `go modules`, the Go toolchain, TinyGo, `mvdan.cc/sh/v3` — is reviewed and merged by hand. Merging is not releasing: artifacts are published only when a version tag is pushed.
+- The `github actions` and `dev tooling` groups automerge once CI is green, because CI actually exercises them: action bumps run in the PR's own workflows, `kprint` is driven by `test-integration`, `golangci-lint` by `lint`, `goreleaser` by `release-check`. Everything else — `go modules`, the Go toolchain, TinyGo, `mvdan.cc/sh/v3` — is reviewed and merged by hand. Merging is not releasing: artifacts are published only when a version tag is pushed.
 - High-risk bumps needing careful manual review even when CI is green: `mvdan.cc/sh/v3` (core formatter; past array-subscript regression) and `aqua:tinygo-org/tinygo` (Wasm compiler; `-X` ldflag injection quirk). Both are kept out of the groups and held for 5 days after release.
 - The `go` pin (in `.config/mise.toml` and the `go.mod` directive) gets its own PR and a manual merge: TinyGo refuses any GOROOT newer than the Go release it supports, and a mismatch fails `build-wasm` and `test-integration`. TinyGo 0.42.0 raised that ceiling to Go 1.27, so the `allowedVersions` cap that held the pin below 1.27 is gone; if a future Go minor outruns the pinned TinyGo, bump TinyGo first or re-add the cap.
 - `gomodTidy` runs after every `go.mod` update, so Renovate branches keep `go.sum` tidy on their own.
